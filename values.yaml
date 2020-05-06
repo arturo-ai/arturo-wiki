@@ -19,13 +19,13 @@ service:
 env:
   HA_ACTIVE: true
   DB_TYPE: postgres
-#  TODO: fill me in
-  DB_HOST: <fill me>
-  DB_PORT: <fill me>
-  DB_NAME: <fill me>
-  DB_USER: <fill me>
-  DB_PASS: <fill me>
-#  end fill
+  # fill me in
+  DB_HOST: placeholder
+  DB_PORT: placeholder
+  DB_NAME: placeholder
+  DB_USER: placeholder
+  # end fill
+  DB_PASS_FILE: /var/arturo-wiki/password-secret/value
 
 ingress:
   enabled: true

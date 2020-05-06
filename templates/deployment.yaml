@@ -32,17 +32,25 @@ spec:
             - name: http
               containerPort: 3000
               protocol: TCP
-{{/*              todo: enable probes */}}
-{{/*          livenessProbe:*/}}
-{{/*            httpGet:*/}}
-{{/*              path: /healthz*/}}
-{{/*              port: http*/}}
-{{/*          readinessProbe:*/}}
-{{/*            httpGet:*/}}
-{{/*              path: /healthz*/}}
-{{/*              port: http*/}}
+          # probes only work after initial setup
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /healthz
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+          volumeMounts:
+            - name: password
+              mountPath: /var/arturo-wiki/password-secret
+              readOnly: true
+      volumes:
+        - name: password
+          secret:
+            secretName: {{ include "wiki.name" . }}-password-secret
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
