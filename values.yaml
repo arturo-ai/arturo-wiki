@@ -1,0 +1,60 @@
+# Default values for wiki.
+# This is a YAML-formatted file.
+# Declare variables to be passed into your templates.
+
+replicaCount: 2
+
+image:
+  repository: requarks/wiki
+  tag: 2
+  pullPolicy: IfNotPresent
+
+nameOverride: ""
+fullnameOverride: ""
+
+service:
+  type: ClusterIP
+  port: 80
+
+env:
+  HA_ACTIVE: true
+  DB_TYPE: postgres
+  # fill me in
+  DB_HOST: placeholder
+  DB_PORT: placeholder
+  DB_NAME: placeholder
+  DB_USER: placeholder
+  # end fill
+  DB_PASS_FILE: /var/arturo-wiki/password-secret/value
+
+ingress:
+  enabled: true
+  hosts:
+    - &host wiki.arturo.ai
+  tls:
+    - secretName: arturo-tls
+      hosts:
+        - *host
+
+resources:
+  limits:
+    cpu: 2
+    memory: 2G
+  requests:
+    cpu: 1
+    memory: 1G
+
+nodeSelector:
+  node_type: cpu
+
+affinity:
+  # only one pod (based on app.kubernetes.io/name label) allowed per node (based on hostname label)
+  podAntiAffinity:
+    requiredDuringSchedulingIgnoredDuringExecution:
+      - topologyKey: kubernetes.io/hostname
+        labelSelector:
+          matchExpressions:
+            - key: app.kubernetes.io/name
+              operator: In
+              values:
+                - "wiki"
